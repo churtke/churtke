@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserModelFactory } from 'src/user/schema/user.schema';
 
-const models = MongooseModule.forFeatureAsync([]);
+const models = MongooseModule.forFeatureAsync([UserModelFactory]);
 
 @Module({
   imports: [

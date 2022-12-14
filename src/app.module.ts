@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { validationSchema } from './common/config/validation';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { validationSchema } from './common/config/validation';
       autoSchemaFile: join(process.cwd(), 'src/schema.graphql'),
       sortSchema: true,
     }),
+    UserModule,
   ],
 })
 export class AppModule {}
