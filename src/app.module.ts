@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { validationSchema } from './common/config/validation';
 import { UserModule } from './user/user.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
       sortSchema: true,
     }),
     UserModule,
+    CommonModule,
   ],
 })
 export class AppModule {}
