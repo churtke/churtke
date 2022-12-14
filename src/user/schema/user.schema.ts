@@ -6,7 +6,7 @@ import {
   SchemaFactory,
 } from '@nestjs/mongoose';
 import { IsBoolean, IsString } from 'class-validator';
-import { Basic } from 'src/common/config/schema/basic.schema';
+import { Basic } from 'src/common/schema/basic.schema';
 
 export type UserDocument = User & Document;
 
