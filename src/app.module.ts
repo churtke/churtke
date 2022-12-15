@@ -6,6 +6,7 @@ import { join } from 'path';
 import { validationSchema } from './common/config/validation';
 import { UserModule } from './user/user.module';
 import { CommonModule } from './common/common.module';
+import { KavenegarModule } from './kavenegar/kavenegar.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CommonModule } from './common/common.module';
     }),
     UserModule,
     CommonModule,
+    KavenegarModule,
   ],
 })
 export class AppModule {}
