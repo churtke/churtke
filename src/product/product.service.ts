@@ -5,6 +5,7 @@ import { AddProductInput, AddProductOutput } from './dto/add-product.dto';
 import { User } from 'src/user/schema/user.schema';
 import { Model, Types } from 'mongoose';
 import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
+import { RemoveProductOutput } from './dto/remove-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -43,6 +44,23 @@ export class ProductService {
 
     return {
       message: 'product edited successfully',
+      product,
+    };
+  }
+
+  async removeProduct(
+    _id: Types.ObjectId,
+    currentUser: User,
+  ): Promise<RemoveProductOutput> {
+    const product = await this.productModel.findOneAndRemove(
+      { _createdBy: currentUser._id, _id },
+      { new: true },
+    );
+
+    if (!product) throw new NotFoundException();
+
+    return {
+      message: 'product removed successfully',
       product,
     };
   }
