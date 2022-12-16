@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { CommonModule } from './common/common.module';
 import { KavenegarModule } from './kavenegar/kavenegar.module';
 import { RedisModule } from './redis/redis.module';
+import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -26,6 +27,7 @@ import { AuthModule } from './auth/auth.module';
     CommonModule,
     KavenegarModule,
     RedisModule,
+    JwtModule,
     AuthModule,
   ],
 })
