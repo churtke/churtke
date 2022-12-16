@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductDocument } from './schema/product.schema';
 import { AddProductInput, AddProductOutput } from './dto/add-product.dto';
 import { User } from 'src/user/schema/user.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -23,6 +24,25 @@ export class ProductService {
 
     return {
       message: 'product added successfully',
+      product,
+    };
+  }
+
+  async editProduct(
+    _id: Types.ObjectId,
+    input: EditProductInput,
+    currentUser: User,
+  ): Promise<EditProductOutput> {
+    const product = await this.productModel.findOneAndUpdate(
+      { _createdBy: currentUser._id, _id },
+      { ...input },
+      { new: true },
+    );
+
+    if (!product) throw new NotFoundException();
+
+    return {
+      message: 'product edited successfully',
       product,
     };
   }
