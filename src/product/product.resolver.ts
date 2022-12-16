@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProductService } from './product.service';
 import { AddProductInput, AddProductOutput } from './dto/add-product.dto';
 import { CurrentUser } from 'src/user/current-user.decorator';
@@ -8,6 +8,7 @@ import { ObjectIdScalar } from 'src/common/scalar/object-id.scalar';
 import { Types } from 'mongoose';
 import { RemoveProductOutput } from './dto/remove-product.dto';
 import { GetProductOutput } from './dto/get-product.dto';
+import { FilterProductsInput, GetProductsOutput } from './dto/get-products.dto';
 
 @Resolver()
 export class ProductResolver {
@@ -38,11 +39,19 @@ export class ProductResolver {
     return this.productService.removeProduct(_id, currentUser);
   }
 
-  @Mutation(() => GetProductOutput)
+  @Query(() => GetProductOutput)
   async getProduct(
     @Args('_id', { type: () => ObjectIdScalar }) _id: Types.ObjectId,
     @CurrentUser() currentUser: User,
   ): Promise<GetProductOutput> {
     return this.productService.getProduct(_id, currentUser);
+  }
+
+  @Query(() => GetProductsOutput)
+  async getProducts(
+    @Args('input') input: FilterProductsInput,
+    @CurrentUser() currentUser: User,
+  ): Promise<GetProductsOutput> {
+    return this.productService.getProducts(input, currentUser);
   }
 }

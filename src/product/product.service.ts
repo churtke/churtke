@@ -6,12 +6,16 @@ import { User } from 'src/user/schema/user.schema';
 import { Model, Types } from 'mongoose';
 import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
 import { RemoveProductOutput } from './dto/remove-product.dto';
+import { FilterProductsInput, GetProductsOutput } from './dto/get-products.dto';
+import { ProductFilter } from './model/product.filter';
+import { FilterGenerator } from 'src/common/filter/filter-generator';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
+    private readonly filterGenerator: FilterGenerator,
   ) {}
 
   async addProduct(
@@ -79,6 +83,28 @@ export class ProductService {
     return {
       message: 'product was found successfully',
       product,
+    };
+  }
+
+  async getProducts(
+    input: FilterProductsInput,
+    currentUser: User,
+  ): Promise<GetProductsOutput> {
+    const filters = new ProductFilter(input, { _createdBy: currentUser._id });
+
+    const products = await this.productModel.find(
+      filters.getFilterQuery(),
+      {},
+      filters.getQueryOptions(),
+    );
+
+    const totalCount = await this.productModel.count(filters.getFilterQuery());
+
+    return {
+      message: 'products was found successfully',
+      products,
+      pagination: { page: input.page, totalCount },
+      filters: await this.filterGenerator.generate(input),
     };
   }
 }
