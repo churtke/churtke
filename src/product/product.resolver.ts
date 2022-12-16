@@ -7,6 +7,7 @@ import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
 import { ObjectIdScalar } from 'src/common/scalar/object-id.scalar';
 import { Types } from 'mongoose';
 import { RemoveProductOutput } from './dto/remove-product.dto';
+import { GetProductOutput } from './dto/get-product.dto';
 
 @Resolver()
 export class ProductResolver {
@@ -35,5 +36,13 @@ export class ProductResolver {
     @CurrentUser() currentUser: User,
   ): Promise<RemoveProductOutput> {
     return this.productService.removeProduct(_id, currentUser);
+  }
+
+  @Mutation(() => GetProductOutput)
+  async getProduct(
+    @Args('_id', { type: () => ObjectIdScalar }) _id: Types.ObjectId,
+    @CurrentUser() currentUser: User,
+  ): Promise<GetProductOutput> {
+    return this.productService.getProduct(_id, currentUser);
   }
 }

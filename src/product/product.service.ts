@@ -64,4 +64,21 @@ export class ProductService {
       product,
     };
   }
+
+  async getProduct(
+    _id: Types.ObjectId,
+    currentUser: User,
+  ): Promise<RemoveProductOutput> {
+    const product = await this.productModel.findOne({
+      _createdBy: currentUser._id,
+      _id,
+    });
+
+    if (!product) throw new NotFoundException();
+
+    return {
+      message: 'product was found successfully',
+      product,
+    };
+  }
 }
