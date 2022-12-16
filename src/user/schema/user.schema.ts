@@ -19,7 +19,7 @@ export type UserDocument = User & Document;
 export class User extends Basic {
   @IsString()
   @Field(() => String)
-  @Prop({ trim: true, required: true })
+  @Prop({ trim: true, required: true, default: 'New User' })
   fullname: string;
 
   @IsString()
