@@ -16,6 +16,7 @@ import { RedisModule } from './redis/redis.module';
 import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
     RedisModule,
     JwtModule,
     AuthModule,
+    ProductModule,
   ],
 })
 export class AppModule implements NestModule {
