@@ -7,6 +7,7 @@ import { validationSchema } from './common/config/validation';
 import { UserModule } from './user/user.module';
 import { CommonModule } from './common/common.module';
 import { KavenegarModule } from './kavenegar/kavenegar.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { KavenegarModule } from './kavenegar/kavenegar.module';
     UserModule,
     CommonModule,
     KavenegarModule,
+    RedisModule,
   ],
 })
 export class AppModule {}
