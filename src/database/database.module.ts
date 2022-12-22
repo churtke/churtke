@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModelFactory } from 'src/user/schema/user.schema';
-import { ProductModelFactory } from '../product/schema/product.schema';
+import { ProductModelFactory } from 'src/product/schema/product.schema';
+import { RoleModelFactory } from 'src/role/schema/role.schema';
 
 const models = MongooseModule.forFeatureAsync([
   UserModelFactory,
   ProductModelFactory,
+  RoleModelFactory,
 ]);
 
 @Module({

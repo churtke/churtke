@@ -1,10 +1,5 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
@@ -15,8 +10,8 @@ import { KavenegarModule } from './kavenegar/kavenegar.module';
 import { RedisModule } from './redis/redis.module';
 import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
-import { JwtMiddleware } from './jwt/jwt.middleware';
 import { ProductModule } from './product/product.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -37,13 +32,7 @@ import { ProductModule } from './product/product.module';
     JwtModule,
     AuthModule,
     ProductModule,
+    RoleModule,
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
-  }
-}
+export class AppModule {}

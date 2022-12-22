@@ -6,7 +6,11 @@ import {
   SchemaFactory,
 } from '@nestjs/mongoose';
 import { IsBoolean, IsString } from 'class-validator';
-import { Basic } from 'src/common/schema/basic.schema';
+import { IsObjectId } from 'class-validator-mongo-object-id';
+import { Types } from 'mongoose';
+import { ObjectIdScalar } from 'src/common/scalar/object-id.scalar';
+import { Core } from 'src/common/schema/core.schema';
+import { Role } from 'src/role/schema/role.schema';
 
 export type UserDocument = User & Document;
 
@@ -16,7 +20,12 @@ export type UserDocument = User & Document;
   collection: 'users',
   timestamps: true,
 })
-export class User extends Basic {
+export class User extends Core {
+  @IsObjectId()
+  @Field(() => ObjectIdScalar)
+  @Prop({ type: Types.ObjectId, ref: Role.name })
+  _role: Types.ObjectId;
+
   @IsString()
   @Field(() => String)
   @Prop({ trim: true, required: true, default: 'New User' })
