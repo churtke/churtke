@@ -11,6 +11,9 @@ import { RedisModule } from './redis/redis.module';
 import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
+import { PermissionModule } from './permission/permission.module';
+import { APP_GUARD } from '@nestjs/core';
+import { PermissionsGuard } from './permission/permissions.guard';
 import { RoleModule } from './role/role.module';
 
 @Module({
@@ -32,7 +35,9 @@ import { RoleModule } from './role/role.module';
     JwtModule,
     AuthModule,
     ProductModule,
+    PermissionModule,
     RoleModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: PermissionsGuard }],
 })
 export class AppModule {}

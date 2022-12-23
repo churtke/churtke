@@ -4,7 +4,7 @@ import { GetCurrentUserOutput } from './dto/get-current-user.dto';
 import { User } from './schema/user.schema';
 import { UserService } from './user.service';
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
