@@ -4,6 +4,7 @@ import { ObjectIdScalar } from 'src/common/scalar/object-id.scalar';
 import { Types } from 'mongoose';
 import { CheckPermissions } from 'src/permission/permission.decorator';
 import { Action } from 'src/permission/permission.constants';
+import { RemoveRoleOutput } from './dto/remove-role.dto';
 import { Role } from './schema/role.schema';
 import { RoleService } from './role.service';
 import { User } from 'src/user/schema/user.schema';
@@ -31,5 +32,14 @@ export class RoleResolver {
     @CurrentUser() currentUser: User,
   ): Promise<EditRoleOutput> {
     return this.roleService.editRole(_id, input, currentUser);
+  }
+
+  @CheckPermissions([Action.DELETE, Role.name])
+  @Mutation(() => RemoveRoleOutput)
+  async removeRole(
+    @Args('_id', { type: () => ObjectIdScalar }) _id: Types.ObjectId,
+    @CurrentUser() currentUser: User,
+  ): Promise<RemoveRoleOutput> {
+    return this.roleService.removeRole(_id, currentUser);
   }
 }
