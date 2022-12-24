@@ -1,10 +1,14 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
-import { GetCurrentUserOutput } from './dto/get-current-user.dto';
-import { User, UserDocument } from './schema/user.schema';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Role, RoleDocument } from 'src/role/schema/role.schema';
 import { Permission } from 'src/permission/permission.constants';
+import { EditUserInput, EditUserOutput } from './dto/edit-user.dto';
+import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
 export class UserService {
@@ -26,16 +30,26 @@ export class UserService {
     return permissions;
   }
 
-  async getCurrentUser(currentUser: User): Promise<GetCurrentUserOutput> {
-    const user = currentUser as User;
-
-    return {
-      message: 'current user was found successfully',
-      user,
-    };
-  }
-
   async findById(userId: string): Promise<User> {
     return this.userModel.findById(userId);
+  }
+
+  async editUser(
+    _id: Types.ObjectId,
+    input: EditUserInput,
+    currentUser: User,
+  ): Promise<EditUserOutput> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _createdBy: currentUser._id, _id },
+      { ...input },
+      { new: true },
+    );
+
+    if (!user) throw new NotFoundException();
+
+    return {
+      message: 'user edited successfully',
+      user,
+    };
   }
 }

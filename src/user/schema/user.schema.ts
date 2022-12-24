@@ -33,13 +33,8 @@ export class User extends Core {
 
   @IsString()
   @Field(() => String)
-  @Prop({ trim: true, required: true })
+  @Prop({ trim: true, required: true, unique: true })
   phone: string;
-
-  @IsBoolean()
-  @Field(() => Boolean)
-  @Prop({ default: false })
-  hasAdmin: boolean;
 
   @IsBoolean()
   @Field(() => Boolean)
