@@ -11,12 +11,16 @@ import { EditUserInput, EditUserOutput } from './dto/edit-user.dto';
 import { User, UserDocument } from './schema/user.schema';
 import { RemoveUserOutput } from './dto/remove-user.dto';
 import { GetUserOutput } from './dto/get-user.dto';
+import { FilterUsersInput, GetUsersOutput } from './dto/get-users.dto';
+import { UserFilter } from './model/user.filter';
+import { FilterGenerator } from 'src/common/filter/filter-generator';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
+    private readonly filterGenerator: FilterGenerator,
   ) {}
 
   async getPermissions(user: User): Promise<Permission[]> {
@@ -61,7 +65,7 @@ export class UserService {
   ): Promise<RemoveUserOutput> {
     const user = await this.userModel.findOneAndRemove(
       { _createdBy: currentUser._id, _id },
-      // TODO: aya be new niaz hastesh ya na baraye remove?
+      // @TODO: aya be new niaz hastesh ya na baraye remove?
       { new: true },
     );
 
@@ -87,6 +91,29 @@ export class UserService {
     return {
       message: 'user was found successfully',
       user,
+    };
+  }
+
+  async getUsers(
+    input: FilterUsersInput,
+    currentUser: User,
+  ): Promise<GetUsersOutput> {
+    // @TODO: bayad bejaye ye abject dast saz az accessfilter estefade beshe
+    const filters = new UserFilter(input, { _createdBy: currentUser._id });
+
+    const users = await this.userModel.find(
+      filters.getFilterQuery(),
+      {},
+      filters.getQueryOptions(),
+    );
+
+    const totalCount = await this.userModel.count(filters.getFilterQuery());
+
+    return {
+      message: 'users was found successfully',
+      users,
+      pagination: { page: input.page, totalCount },
+      filters: await this.filterGenerator.generate(input),
     };
   }
 }

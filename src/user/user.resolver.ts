@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { CurrentUser } from './current-user.decorator';
 import { User } from './schema/user.schema';
 import { UserService } from './user.service';
@@ -9,6 +9,7 @@ import { CheckPermissions } from 'src/permission/permission.decorator';
 import { Action } from 'src/permission/permission.constants';
 import { RemoveUserOutput } from './dto/remove-user.dto';
 import { GetUserOutput } from './dto/get-user.dto';
+import { FilterUsersInput, GetUsersOutput } from './dto/get-users.dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -34,11 +35,20 @@ export class UserResolver {
   }
 
   @CheckPermissions([Action.READ, User.name])
-  @Mutation(() => GetUserOutput)
+  @Query(() => GetUserOutput)
   async getUser(
     @Args('_id', { type: () => ObjectIdScalar }) _id: Types.ObjectId,
     @CurrentUser() currentUser: User,
   ): Promise<GetUserOutput> {
     return this.userService.getUser(_id, currentUser);
+  }
+
+  @CheckPermissions([Action.READ, User.name])
+  @Query(() => GetUsersOutput)
+  async getUsers(
+    @Args('input') input: FilterUsersInput,
+    @CurrentUser() currentUser: User,
+  ): Promise<GetUsersOutput> {
+    return this.userService.getUsers(input, currentUser);
   }
 }
