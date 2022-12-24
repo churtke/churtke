@@ -4,6 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Role, RoleDocument } from 'src/role/schema/role.schema';
 import { EditRoleInput, EditRoleOutput } from './dto/edit-role.dto';
 import { RemoveRoleOutput } from './dto/remove-role.dto';
+import { GetRoleOutput } from './dto/get-role.dto';
 import { FilterGenerator } from 'src/common/filter/filter-generator';
 import { User } from 'src/user/schema/user.schema';
 import { AddRoleInput, AddRoleOutput } from './dto/add-role.dto';
@@ -62,6 +63,23 @@ export class RoleService {
 
     return {
       message: 'role removed successfully',
+      role,
+    };
+  }
+
+  async getRole(
+    _id: Types.ObjectId,
+    currentUser: User,
+  ): Promise<GetRoleOutput> {
+    const role = await this.roleModel.findOne({
+      _createdBy: currentUser._id,
+      _id,
+    });
+
+    if (!role) throw new NotFoundException();
+
+    return {
+      message: 'role was found successfully',
       role,
     };
   }
