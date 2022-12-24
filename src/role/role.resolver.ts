@@ -6,6 +6,7 @@ import { CheckPermissions } from 'src/permission/permission.decorator';
 import { Action } from 'src/permission/permission.constants';
 import { RemoveRoleOutput } from './dto/remove-role.dto';
 import { GetRoleOutput } from './dto/get-role.dto';
+import { FilterRolesInput, GetRolesOutput } from './dto/get-roles.dto';
 import { Role } from './schema/role.schema';
 import { RoleService } from './role.service';
 import { User } from 'src/user/schema/user.schema';
@@ -51,5 +52,14 @@ export class RoleResolver {
     @CurrentUser() currentUser: User,
   ): Promise<GetRoleOutput> {
     return this.roleService.getRole(_id, currentUser);
+  }
+
+  @CheckPermissions([Action.READ, Role.name])
+  @Query(() => GetRolesOutput)
+  async getRoles(
+    @Args('input') input: FilterRolesInput,
+    @CurrentUser() currentUser: User,
+  ): Promise<GetRolesOutput> {
+    return this.roleService.getRoles(input, currentUser);
   }
 }

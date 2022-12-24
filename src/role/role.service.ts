@@ -5,8 +5,10 @@ import { Role, RoleDocument } from 'src/role/schema/role.schema';
 import { EditRoleInput, EditRoleOutput } from './dto/edit-role.dto';
 import { RemoveRoleOutput } from './dto/remove-role.dto';
 import { GetRoleOutput } from './dto/get-role.dto';
+import { FilterRolesInput, GetRolesOutput } from './dto/get-roles.dto';
 import { FilterGenerator } from 'src/common/filter/filter-generator';
 import { User } from 'src/user/schema/user.schema';
+import { RoleFilter } from './model/role.filter';
 import { AddRoleInput, AddRoleOutput } from './dto/add-role.dto';
 
 @Injectable()
@@ -81,6 +83,28 @@ export class RoleService {
     return {
       message: 'role was found successfully',
       role,
+    };
+  }
+
+  async getRoles(
+    input: FilterRolesInput,
+    currentUser: User,
+  ): Promise<GetRolesOutput> {
+    const filters = new RoleFilter(input, { _createdBy: currentUser._id });
+
+    const roles = await this.roleModel.find(
+      filters.getFilterQuery(),
+      {},
+      filters.getQueryOptions(),
+    );
+
+    const totalCount = await this.roleModel.count(filters.getFilterQuery());
+
+    return {
+      message: 'roles was found successfully',
+      roles,
+      pagination: { page: input.page, totalCount },
+      filters: await this.filterGenerator.generate(input),
     };
   }
 }
