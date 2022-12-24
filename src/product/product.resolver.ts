@@ -9,11 +9,15 @@ import { Types } from 'mongoose';
 import { RemoveProductOutput } from './dto/remove-product.dto';
 import { GetProductOutput } from './dto/get-product.dto';
 import { FilterProductsInput, GetProductsOutput } from './dto/get-products.dto';
+import { CheckPermissions } from 'src/permission/permission.decorator';
+import { Action } from 'src/permission/permission.constants';
+import { Product } from './schema/product.schema';
 
-@Resolver()
+@Resolver(() => Product)
 export class ProductResolver {
   constructor(private readonly productService: ProductService) {}
 
+  @CheckPermissions([Action.CREATE, Product.name])
   @Mutation(() => AddProductOutput)
   async addProduct(
     @Args('input') input: AddProductInput,
@@ -22,6 +26,7 @@ export class ProductResolver {
     return this.productService.addProduct(input, currentUser);
   }
 
+  @CheckPermissions([Action.UPDATE, Product.name])
   @Mutation(() => EditProductOutput)
   async editProduct(
     @Args('_id', { type: () => ObjectIdScalar }) _id: Types.ObjectId,
@@ -31,6 +36,7 @@ export class ProductResolver {
     return this.productService.editProduct(_id, input, currentUser);
   }
 
+  @CheckPermissions([Action.DELETE, Product.name])
   @Mutation(() => RemoveProductOutput)
   async removeProduct(
     @Args('_id', { type: () => ObjectIdScalar }) _id: Types.ObjectId,
@@ -39,6 +45,7 @@ export class ProductResolver {
     return this.productService.removeProduct(_id, currentUser);
   }
 
+  @CheckPermissions([Action.READ, Product.name])
   @Query(() => GetProductOutput)
   async getProduct(
     @Args('_id', { type: () => ObjectIdScalar }) _id: Types.ObjectId,
@@ -47,6 +54,7 @@ export class ProductResolver {
     return this.productService.getProduct(_id, currentUser);
   }
 
+  @CheckPermissions([Action.READ, Product.name])
   @Query(() => GetProductsOutput)
   async getProducts(
     @Args('input') input: FilterProductsInput,
