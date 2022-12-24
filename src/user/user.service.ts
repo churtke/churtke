@@ -10,6 +10,7 @@ import { Permission } from 'src/permission/permission.constants';
 import { EditUserInput, EditUserOutput } from './dto/edit-user.dto';
 import { User, UserDocument } from './schema/user.schema';
 import { RemoveUserOutput } from './dto/remove-user.dto';
+import { GetUserOutput } from './dto/get-user.dto';
 
 @Injectable()
 export class UserService {
@@ -68,6 +69,23 @@ export class UserService {
 
     return {
       message: 'user removed successfully',
+      user,
+    };
+  }
+
+  async getUser(
+    _id: Types.ObjectId,
+    currentUser: User,
+  ): Promise<GetUserOutput> {
+    const user = await this.userModel.findOne({
+      _createdBy: currentUser._id,
+      _id,
+    });
+
+    if (!user) throw new NotFoundException();
+
+    return {
+      message: 'user was found successfully',
       user,
     };
   }
