@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Role, RoleDocument } from 'src/role/schema/role.schema';
+import { EditRoleInput, EditRoleOutput } from './dto/edit-role.dto';
+import { FilterGenerator } from 'src/common/filter/filter-generator';
 import { User } from 'src/user/schema/user.schema';
 import { AddRoleInput, AddRoleOutput } from './dto/add-role.dto';
 
@@ -9,6 +11,7 @@ import { AddRoleInput, AddRoleOutput } from './dto/add-role.dto';
 export class RoleService {
   constructor(
     @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
+    private readonly filterGenerator: FilterGenerator,
   ) {}
 
   async addRole(
@@ -22,6 +25,25 @@ export class RoleService {
 
     return {
       message: 'role added successfully',
+      role,
+    };
+  }
+
+  async editRole(
+    _id: Types.ObjectId,
+    input: EditRoleInput,
+    currentUser: User,
+  ): Promise<EditRoleOutput> {
+    const role = await this.roleModel.findOneAndUpdate(
+      { _createdBy: currentUser._id, _id },
+      { ...input },
+      { new: true },
+    );
+
+    if (!role) throw new NotFoundException();
+
+    return {
+      message: 'role edited successfully',
       role,
     };
   }
