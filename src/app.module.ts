@@ -15,6 +15,7 @@ import { PermissionModule } from './permission/permission.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PermissionsGuard } from './permission/permissions.guard';
 import { RoleModule } from './role/role.module';
+import { ZibalModule } from './zibal/zibal.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { RoleModule } from './role/role.module';
     ProductModule,
     PermissionModule,
     RoleModule,
+    ZibalModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: PermissionsGuard }],
 })
