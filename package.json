@@ -25,6 +25,7 @@
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "ioredis": "^5.3.1",
     "joi": "^17.9.1",
     "kavenegar": "^1.1.4",
     "libphonenumber-js": "^1.10.24",
