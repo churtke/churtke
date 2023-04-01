@@ -28,6 +28,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "ioredis": "^5.3.1",
     "joi": "^17.9.1",
+    "jsonwebtoken": "^9.0.0",
     "kavenegar": "^1.1.4",
     "libphonenumber-js": "^1.10.24",
     "otp-generator": "^4.0.1",

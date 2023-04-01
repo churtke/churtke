@@ -4,6 +4,7 @@ import { validationSchema } from './common/config/validation';
 import { AuthModule } from './auth/auth.module';
 import { MessengerModule } from './messenger/messenger.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
       inject: [ConfigService],
     }),
+    CommonModule,
     MessengerModule,
     AuthModule,
   ],
