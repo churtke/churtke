@@ -1,16 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { SendCodeInput, SendCodeOutput } from './dto/send-code.dto';
 import * as otpGenerator from 'otp-generator';
 import { CountryCode, parsePhoneNumber } from 'libphonenumber-js';
 import { MessengerService } from '../messenger/messenger.service';
 import Redis from 'ioredis';
 import { ConfigService } from '@nestjs/config';
+import { VerifyCodeInput, VerifyCodeOutput } from './dto/verify-code.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
+import { Repository } from 'typeorm';
+import { JwtService } from 'src/common/jwt/jwt.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly messengerService: MessengerService,
+    private readonly jwtService: JwtService,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
   private redisClient(): Redis {
@@ -40,6 +47,39 @@ export class AuthService {
 
     return {
       message: 'code sent successfully',
+    };
+  }
+
+  async verifyCode(input: VerifyCodeInput): Promise<VerifyCodeOutput> {
+    const phone = this.parsePhone(input.region, input.phone);
+    const code = await this.redisClient().get(phone);
+
+    if (code !== input.code) {
+      throw new ForbiddenException('phone or code incorrect');
+    }
+
+    await this.redisClient().del(phone);
+
+    let user = await this.userRepository.findOne({
+      where: { phone: phone },
+    });
+
+    if (!user) {
+      user = new User();
+      user.fullname = 'New User';
+      user.phone = phone;
+      user.hasAdmin = false;
+
+      await this.userRepository.save(user);
+    }
+
+    const token = await this.jwtService.sign(user.id.toString());
+
+    return {
+      message: 'user verified successfully',
+      accessToken: token.accessToken,
+      refreshToken: token.refreshToken,
+      user,
     };
   }
 }
