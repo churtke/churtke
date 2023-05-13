@@ -1,10 +1,15 @@
-import { CoreEntity } from 'src/common/entity/core.entity';
-import { Column, Entity } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class User extends CoreEntity {
+@Entity({ name: 'users' })
+export class User extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
   @Column()
-  fullname: string;
+  name: string;
 
   @Column()
   phone: string;

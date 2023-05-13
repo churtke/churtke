@@ -66,7 +66,7 @@ export class AuthService {
 
     if (!user) {
       user = new User();
-      user.fullname = 'New User';
+      user.name = 'New User';
       user.phone = phone;
       user.hasAdmin = false;
 
