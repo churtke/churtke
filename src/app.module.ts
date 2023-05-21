@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { MessengerModule } from './messenger/messenger.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
+import { JwtModule } from './common/jwt/jwt.module';
 
 @Module({
   imports: [
@@ -21,6 +22,10 @@ import { CommonModule } from './common/common.module';
         synchronize: true,
       }),
       inject: [ConfigService],
+    }),
+    JwtModule.forRoot({
+      privateKey: process.env.PRIVATE_KEY,
+      expiration: '7d',
     }),
     CommonModule,
     MessengerModule,

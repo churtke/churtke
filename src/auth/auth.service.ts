@@ -77,8 +77,7 @@ export class AuthService {
 
     return {
       message: 'user verified successfully',
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
+      token,
       user,
     };
   }

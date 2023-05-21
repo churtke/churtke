@@ -1,36 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { JwtToken } from './jwt.interface';
-import {
-  ACCESS_TOKEN_EXPIRATION,
-  REFRESH_TOKEN_EXPIRATION,
-} from './jwt.constant';
+import { JwtModuleOptions } from './jwt.interface';
+import { JWT_CONFIG_OPTIONS } from './jwt.constant';
 
 @Injectable()
 export class JwtService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(JWT_CONFIG_OPTIONS) private readonly options: JwtModuleOptions,
+  ) {}
 
-  async sign(userId: string): Promise<JwtToken> {
-    const privateKey = this.configService.get<string>('PRIVATE_KEY');
-
-    const accessToken = jwt.sign({ userId }, privateKey, {
-      expiresIn: `${ACCESS_TOKEN_EXPIRATION}d`,
+  sign(userId: string): string {
+    return jwt.sign({ userId }, this.options.privateKey, {
+      expiresIn: this.options.expiration,
     });
-
-    const refreshToken = jwt.sign({ userId }, privateKey, {
-      expiresIn: `${REFRESH_TOKEN_EXPIRATION}d`,
-    });
-
-    return {
-      accessToken,
-      refreshToken,
-    };
   }
 
-  async verify(token: string): Promise<any> {
-    const privateKey = this.configService.get<string>('PRIVATE_KEY');
-
-    return jwt.verify(token, privateKey);
+  verify(token: string): any {
+    return jwt.verify(token, this.options.privateKey);
   }
 }

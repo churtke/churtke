@@ -11,9 +11,7 @@ export class VerifyCodeInput {
 }
 
 export class VerifyCodeOutput extends CoreOutput {
-  accessToken?: string;
-
-  refreshToken?: string;
+  token?: string;
 
   user?: User;
 }
