@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validationSchema } from './common/config/validation';
 import { AuthModule } from './auth/auth.module';
@@ -6,6 +11,8 @@ import { MessengerModule } from './messenger/messenger.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
 import { JwtModule } from './common/jwt/jwt.module';
+import { UserModule } from './user/user.module';
+import { UserMiddleware } from './user/user.middleware';
 
 @Module({
   imports: [
@@ -30,6 +37,14 @@ import { JwtModule } from './common/jwt/jwt.module';
     CommonModule,
     MessengerModule,
     AuthModule,
+    UserModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
+  }
+}
