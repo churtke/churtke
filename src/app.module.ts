@@ -13,6 +13,8 @@ import { CommonModule } from './common/common.module';
 import { JwtModule } from './common/jwt/jwt.module';
 import { UserModule } from './user/user.module';
 import { UserMiddleware } from './user/user.middleware';
+import { APP_GUARD } from '@nestjs/core';
+import { PermissionGuard } from './permission/permission.guard';
 
 @Module({
   imports: [
@@ -38,6 +40,12 @@ import { UserMiddleware } from './user/user.middleware';
     MessengerModule,
     AuthModule,
     UserModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {
