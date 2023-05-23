@@ -13,6 +13,7 @@ import { CommonModule } from './common/common.module';
 import { JwtModule } from './common/jwt/jwt.module';
 import { UserModule } from './user/user.module';
 import { UserMiddleware } from './user/user.middleware';
+import { ProfileModule } from './profile/profile.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PermissionGuard } from './permission/permission.guard';
 
@@ -40,6 +41,7 @@ import { PermissionGuard } from './permission/permission.guard';
     MessengerModule,
     AuthModule,
     UserModule,
+    ProfileModule,
   ],
   providers: [
     {
