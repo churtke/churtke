@@ -68,7 +68,6 @@ export class AuthService {
       user = new User();
       user.name = 'New User';
       user.phone = phone;
-      user.hasAdmin = false;
 
       await this.userRepository.save(user);
     }
