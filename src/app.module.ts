@@ -17,6 +17,7 @@ import { ProfileModule } from './profile/profile.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PermissionGuard } from './permission/permission.guard';
 import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -37,6 +38,10 @@ import { FileModule } from './file/file.module';
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
       expiration: '7d',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: 'uploads',
+      serveRoot: '/uploads',
     }),
     CommonModule,
     MessengerModule,
