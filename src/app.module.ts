@@ -16,6 +16,7 @@ import { UserMiddleware } from './user/user.middleware';
 import { ProfileModule } from './profile/profile.module';
 import { APP_GUARD } from '@nestjs/core';
 import { PermissionGuard } from './permission/permission.guard';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { PermissionGuard } from './permission/permission.guard';
     AuthModule,
     UserModule,
     ProfileModule,
+    FileModule,
   ],
   providers: [
     {

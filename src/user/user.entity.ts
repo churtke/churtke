@@ -1,5 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from './role/role.enum';
+import { File } from 'src/file/file.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -17,4 +24,7 @@ export class User extends BaseEntity {
 
   @Column({ default: Role.Customer })
   role: Role;
+
+  @OneToMany(() => File, (file) => file.createdBy)
+  files: File[];
 }
