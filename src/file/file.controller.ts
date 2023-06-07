@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   Controller,
+  Get,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -16,6 +18,7 @@ import { User } from 'src/user/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { AddFileOutput } from './dto/add-file.dto';
 import { FileService } from './file.service';
+import { GetFileOutput } from './dto/get-file.dto';
 
 const uploaderOptions: MulterOptions = {
   storage: diskStorage({
@@ -47,5 +50,14 @@ export class FileController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<AddFileOutput> {
     return this.fileService.addFile(user, file);
+  }
+
+  @Permission(Action.FILE_VIEW)
+  @Get(':id')
+  async getFile(
+    @CurrentUser() user: User,
+    @Param('id') id: number,
+  ): Promise<GetFileOutput> {
+    return this.fileService.getFile(user, id);
   }
 }
