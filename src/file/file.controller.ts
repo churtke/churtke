@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AddFileOutput } from './dto/add-file.dto';
 import { FileService } from './file.service';
 import { GetFileOutput } from './dto/get-file.dto';
+import { GetFilesInput } from './dto/get-files.dto';
 
 const uploaderOptions: MulterOptions = {
   storage: diskStorage({
@@ -59,5 +61,14 @@ export class FileController {
     @Param('id') id: number,
   ): Promise<GetFileOutput> {
     return this.fileService.getFile(user, id);
+  }
+
+  @Permission(Action.FILE_VIEW)
+  @Get()
+  async getFiles(
+    @CurrentUser() user: User,
+    @Query() input: GetFilesInput,
+  ): Promise<GetFileOutput> {
+    return this.fileService.getFiles(user, input);
   }
 }
