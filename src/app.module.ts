@@ -18,6 +18,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { PermissionGuard } from './permission/permission.guard';
 import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     UserModule,
     ProfileModule,
     FileModule,
+    ProductModule,
   ],
   providers: [
     {
