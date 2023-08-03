@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/user/user.entity';
 import { AddProductInput, AddProductOutput } from './dto/add-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { Repository } from 'typeorm';
+import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -27,6 +28,27 @@ export class ProductService {
 
     return {
       message: 'product added successfully',
+      product,
+    };
+  }
+
+  async editProduct(
+    user: User,
+    id: number,
+    input: EditProductInput,
+  ): Promise<EditProductOutput> {
+    const p = await this.productRepository.findOneBy({
+      id,
+    });
+
+    if (!p) throw new NotFoundException();
+
+    Object.assign(p, input);
+
+    const product = await this.productRepository.save(p);
+
+    return {
+      message: 'product edited successfully',
       product,
     };
   }
