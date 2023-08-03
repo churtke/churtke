@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { Repository } from 'typeorm';
 import { GetProductOutput } from './dto/get-product.dto';
+import { GetProductsInput, GetProductsOutput } from './dto/get-products.dto';
+import { ProductFilter } from './product.filter';
 import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
 
 @Injectable()
@@ -62,6 +64,29 @@ export class ProductService {
     return {
       message: 'product was found successfully',
       product,
+    };
+  }
+
+  async getProducts(
+    user: User,
+    input: GetProductsInput,
+  ): Promise<GetProductsOutput> {
+    const filters = new ProductFilter(input);
+
+    const products = await this.productRepository.find({
+      relations: ['createdBy'],
+      where: filters.getFilters(),
+      ...filters.getOptions(),
+    });
+
+    const totalCount = await this.productRepository.countBy(
+      filters.getFilters(),
+    );
+
+    return {
+      message: 'products was found successfully',
+      products,
+      pagination: { page: input.page, totalCount },
     };
   }
 }

@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Permission } from 'src/permission/permission.decorator';
 import { Action } from 'src/user/role/role.constant';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User } from 'src/user/user.entity';
 import { ProductService } from './product.service';
+import { GetProductsOutput } from './dto/get-products.dto';
 import { AddProductInput, AddProductOutput } from './dto/add-product.dto';
 import { GetProductOutput } from './dto/get-product.dto';
+import { GetProductsInput } from 'src/product/dto/get-products.dto';
 import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
 
 @Controller('products')
@@ -38,5 +40,14 @@ export class ProductController {
     @Param('id') id: number,
   ): Promise<GetProductOutput> {
     return this.productService.getProduct(user, id);
+  }
+
+  @Permission(Action.PRODUCT_VIEW)
+  @Get()
+  async getProducts(
+    @CurrentUser() user: User,
+    @Query() input: GetProductsInput,
+  ): Promise<GetProductsOutput> {
+    return this.productService.getProducts(user, input);
   }
 }
