@@ -4,6 +4,7 @@ import { AddProductInput, AddProductOutput } from './dto/add-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { Repository } from 'typeorm';
+import { GetProductOutput } from './dto/get-product.dto';
 import { EditProductInput, EditProductOutput } from './dto/edit-product.dto';
 
 @Injectable()
@@ -49,6 +50,17 @@ export class ProductService {
 
     return {
       message: 'product edited successfully',
+      product,
+    };
+  }
+
+  async getProduct(user: User, id: number): Promise<GetProductOutput> {
+    const product = await this.productRepository.findOneBy({ id });
+
+    if (!product) throw new NotFoundException();
+
+    return {
+      message: 'product was found successfully',
       product,
     };
   }
